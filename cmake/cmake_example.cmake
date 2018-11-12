@@ -1,0 +1,18 @@
+find_package(CURL REQUIRED)
+if(!CURL_FOUND)
+    message(FATAL_ERROR  "CURL_NOT_FOUND")
+endif()
+
+macro(add_example_target EXAMPLE_TARGET EXAMPLE_FILE)
+    add_executable(${EXAMPLE_TARGET} ${EXAMPLE_FILE})
+    target_link_libraries(${EXAMPLE_TARGET} ${CURL_LIBRARY})
+endmacro(add_example_target)
+
+macro(add_example_directory EXAMPLE_DIRECTORY)
+file(GLOB_RECURSE EXAMPLE_FILES "${EXAMPLE_DIRECTORY}/example_*.cpp")
+foreach(EXAMPLE_FILE IN LISTS EXAMPLE_FILES)
+    get_filename_component(EXAMPLE_TARGET ${EXAMPLE_FILE} NAME_WE)
+    message(STATUS "Found example: ${EXAMPLE_TARGET}")
+    add_example_target(${EXAMPLE_TARGET} ${EXAMPLE_FILE})
+endforeach(EXAMPLE_FILE)
+endmacro(add_example_directory)
